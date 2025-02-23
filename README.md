@@ -5,3 +5,6 @@ Features
 Generate Discord Nitro codes instantly.
 Simple and easy-to-use interface.
 No need to pay for Discord Nitro when using this tool.
+
+
+Download Python: https://www.python.org/downloads/
